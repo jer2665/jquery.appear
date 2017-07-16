@@ -20,6 +20,7 @@
   var $window = $(window);
 
   var $prior_appeared = [];
+  var $in_view = [];
 
   function appeared(selector) {
     return $(selector).filter(function() {
@@ -32,11 +33,17 @@
     for (var index = 0, selectorsLength = selectors.length; index < selectorsLength; index++) {
       var $appeared = appeared(selectors[index]);
 
-      $appeared.trigger('appear', [$appeared]);
+      if ($appeared.length && $in_view[index] !== true){
+        $appeared.trigger('appear', [$appeared]);
+        $in_view[index] = true;
+      }
 
       if ($prior_appeared[index]) {
         var $disappeared = $prior_appeared[index].not($appeared);
-        $disappeared.trigger('disappear', [$disappeared]);
+        if ($disappeared.length) {
+            $disappeared.trigger('disappear', [$disappeared]);
+            $in_view[index] = false;
+        }
       }
       $prior_appeared[index] = $appeared;
     }
