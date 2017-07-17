@@ -8,6 +8,7 @@
  *
  * Version: 0.3.7
  */
+
 (function($) {
   var selectors = [];
 
@@ -55,27 +56,29 @@
   }
 
   // "appeared" custom filter
-  $.expr[':'].appeared = function(element) {
-    var $element = $(element);
-    if (!$element.is(':visible')) {
-      return false;
-    }
+  $.expr.pseudos.appeared = $.expr.createPseudo(function(arg) {
+    return function(element) {
+      var $element = $(element);
+      if (!$element.is(':visible')) {
+        return false;
+      }
 
-    var window_left = $window.scrollLeft();
-    var window_top = $window.scrollTop();
-    var offset = $element.offset();
-    var left = offset.left;
-    var top = offset.top;
+      var window_left = $window.scrollLeft();
+      var window_top = $window.scrollTop();
+      var offset = $element.offset();
+      var left = offset.left;
+      var top = offset.top;
 
-    if (top + $element.height() >= window_top &&
-        top - ($element.data('appear-top-offset') || 0) <= window_top + $window.height() &&
-        left + $element.width() >= window_left &&
-        left - ($element.data('appear-left-offset') || 0) <= window_left + $window.width()) {
-      return true;
-    } else {
-      return false;
+      if (top + $element.height() >= window_top &&
+          top - ($element.data('appear-top-offset') || 0) <= window_top + $window.height() &&
+          left + $element.width() >= window_left &&
+          left - ($element.data('appear-left-offset') || 0) <= window_left + $window.width()) {
+        return true;
+      } else {
+        return false;
+      }
     }
-  };
+  });
 
   $.fn.extend({
     // watching for element's appearance in browser viewport
